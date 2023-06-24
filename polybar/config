@@ -1,0 +1,320 @@
+;==========================================================
+;
+;
+;   ██████╗  ██████╗ ██╗  ██╗   ██╗██████╗  █████╗ ██████╗
+;   ██╔══██╗██╔═══██╗██║  ╚██╗ ██╔╝██╔══██╗██╔══██╗██╔══██╗
+;   ██████╔╝██║   ██║██║   ╚████╔╝ ██████╔╝███████║██████╔╝
+;   ██╔═══╝ ██║   ██║██║    ╚██╔╝  ██╔══██╗██╔══██║██╔══██╗
+;   ██║     ╚██████╔╝███████╗██║   ██████╔╝██║  ██║██║  ██║
+;   ╚═╝      ╚═════╝ ╚══════╝╚═╝   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+;
+;
+;   To learn more about how to configure Polybar
+;   go to https://github.com/polybar/polybar
+;
+;   The README contains a lot of information
+;
+;==========================================================
+
+[colors]
+background     = #aa24283B
+background-alt = #aa414868
+foreground     = #C5C8C6
+primary        = #7BD88F
+secondary      = #7AA2F7
+alert          = #F77676
+disabled       = #888DA6
+green          = #7BD88F
+blue           = #7AA2F7
+red            = #F77676
+purple         = #BB9AF7
+skyblue        = #7DCFFF
+orange         = #FF9E64
+lightgrey      = #C0CAF5
+grey           = #9AA5CE
+disabled2      = #888DA6
+# og disabled colour: 707880
+
+[bar/bar]
+width = 100%
+height = 24pt
+radius = 0
+bottom = false
+; dpi = 96
+
+background = ${colors.background}
+foreground = ${colors.lightgrey}
+
+line-size = 3pt
+
+border-size = 0pt
+border-color = #00000000
+
+padding-left = 0
+padding-right = 1
+
+module-margin = 1
+
+separator = |
+separator-foreground = ${colors.disabled2}
+
+font-0 = "JetBrainsMono Nerd Font:size=10;2"
+font-1 = "JetBrainsMono Nerd Font:size=10;2"
+font-2 = "JetBrainsMono Nerd Font:size=4;2"
+
+# Removed: filesystem
+modules-left = xworkspaces xwindow
+#modules-left = bspwm
+modules-right = battery pulseaudio memory cpu date
+
+cursor-click = pointer
+cursor-scroll = ns-resize
+
+enable-ipc = true
+
+; tray-position = right
+
+; wm-restack = generic
+wm-restack = bspwm
+; wm-restack = i3
+
+override-redirect = true
+
+[module/xworkspaces]
+type = internal/xworkspaces
+
+label-active = %name%
+label-active-background = ${colors.background-alt}
+label-active-underline= ${colors.green}
+label-active-padding = 1
+
+label-occupied = %name%
+label-occupied-underline = ${colors.blue}
+label-occupied-padding = 1
+
+label-urgent = %name%
+label-urgent-background = ${colors.alert}
+label-urgent-padding = 1
+
+label-empty = %name%
+label-empty-foreground = ${colors.disabled2}
+label-empty-padding = 1
+
+[module/xwindow]
+type = internal/xwindow
+label = %title:0:60:...%
+
+[module/filesystem]
+type = internal/fs
+interval = 25
+
+mount-0 = /
+
+label-mounted = %{F#F0C674}%mountpoint%%{F-} %percentage_used%%
+
+label-unmounted = %mountpoint% not mounted
+label-unmounted-foreground = ${colors.disabled}
+
+[module/pulseaudio]
+type = internal/pulseaudio
+
+format-volume-prefix = " "
+format-volume-prefix-foreground = ${colors.green}
+format-volume = <label-volume> <bar-volume>
+format-volume-foreground = ${colors.lightgrey}
+
+label-volume = %percentage%%
+
+bar-volume-width = 11
+bar-volume-foreground-0 = #55AA55
+bar-volume-gradient = true
+bar-volume-indicator = 󰎈
+bar-volume-indicator-font = 0
+bar-volume-fill = 
+bar-volume-fill-font = 2
+bar-volume-empty = 
+bar-volume-empty-font = 2
+bar-volume-empty-foreground = ${colors.disabled}
+
+label-muted = 󰖁
+label-muted-foreground = ${colors.disabled}
+
+[module/xkeyboard]
+type = internal/xkeyboard
+blacklist-0 = num lock
+
+format-prefix = "  "
+format-prefix-foreground = ${colors.blue}
+
+label-layout = %layout%
+label-layout-foreground = ${colors.lightgrey}
+
+label-indicator-padding = 2
+label-indicator-margin = 1
+label-indicator-foreground = ${colors.background}
+label-indicator-background = ${colors.secondary}
+
+[module/memory]
+type = internal/memory
+interval = 2
+format-prefix = "󰍛 "
+format-prefix-foreground = ${colors.orange}
+label = %percentage_used:2%%
+label-foreground = ${colors.lightgrey}
+
+[module/cpu]
+type = internal/cpu
+interval = 2
+format-prefix = "󰘚 "
+format-prefix-foreground = ${colors.skyblue}
+label = %percentage:2%%
+label-foreground = ${colors.lightgrey}
+
+[network-base]
+type = internal/network
+interval = 5
+format-connected = <label-connected>
+format-disconnected = <label-disconnected>
+label-disconnected = %{F#F0C674}%ifname%%{F#707880} disconnected
+
+[module/wlan]
+inherit = network-base
+interface-type = wireless
+label-connected = %{F#F0C674}%ifname%%{F-} %essid% %local_ip%
+
+[module/eth]
+inherit = network-base
+interface-type = wired
+label-connected = %{F#F0C674}%ifname%%{F-} %local_ip%
+
+[module/date]
+type = internal/date
+interval = 1
+
+format-prefix = "  "
+date = %H:%M
+date-alt = %Y-%m-%d %H:%M:%S
+format-prefix-foreground = ${colors.purple}
+
+label = %date%
+label-foreground = ${colors.lightgrey}
+
+[module/battery]
+type = internal/battery
+
+; This is useful in case the battery never reports 100% charge
+full-at = 99
+
+; format-low once this charge percentage is reached
+; ; Default: 10
+; ; New in version 3.6.0
+; low-at = 20
+
+; Use the following command to list batteries and adapters:
+; $ ls -1 /sys/class/power_supply/
+battery = BAT0
+adapter = ADP1
+
+; If an inotify event haven't been reported in this many
+; seconds, manually poll for new values.
+;
+; Needed as a fallback for systems that don't report events
+; on sysfs/procfs.
+;
+; Disable polling by setting the interval to 0.
+;
+; Default: 5
+poll-interval = 5
+
+; see "man date" for details on how to format the time string
+; NOTE: if you want to use syntax tags here you need to use %%{...}
+; Default: %H:%M:%S
+time-format = %H:%M
+
+; Available tags:
+;   <label-charging> (default)
+;   <bar-capacity>
+;   <ramp-capacity>
+;   <animation-charging>
+format-charging = <label-charging>
+format-charging-prefix = "󰂄"
+format-charging-prefix-foreground = ${colors.blue}
+
+; Available tags:
+;   <label-discharging> (default)
+;   <bar-capacity>
+;   <ramp-capacity>
+;   <animation-discharging>
+format-discharging = <label-discharging>
+format-discharging-prefix = "󱊢"
+format-discharging-prefix-foreground = ${colors.orange}
+
+; Available tags:
+;   <label-full> (default)
+;   <bar-capacity>
+;   <ramp-capacity>
+format-full = <label-full>
+format-full-prefix = "󱊣"
+format-full-prefix-foreground = ${colors.green}
+
+; Available tokens:
+;   %percentage% (default)
+;   %time%
+;   %consumption% (shows current charge rate in watts)
+label-charging = " %percentage%%"
+
+; Available tokens:
+;   %percentage% (default)
+;   %time%
+;   %consumption% (shows current discharge rate in watts)
+label-discharging = " %percentage%%"
+
+; Available tags:
+;   <label-low> (default)
+;   <bar-capacity>
+;   <ramp-capacity>
+format-low = <label-low>
+format-low-prefix = "󱊡 "
+format-low-prefix-foreground = ${colors.red}
+
+; Available tokens:
+;   %percentage% (default)
+label-full = " Full"
+
+; Available tokens:
+;   %percentage% (default) - is set to 100 if full-at is reached
+;   %percentage_raw%
+;   %time%
+;   %consumption% (shows current discharge rate in watts)
+; New in version 3.6.0
+label-low = " Low"
+
+; Only applies if <ramp-capacity> is used
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
+
+; Only applies if <bar-capacity> is used
+;bar-capacity-width = 10
+
+; Only applies if <animation-charging> is used
+animation-charging-0 = 
+animation-charging-1 = 
+
+; Framerate in milliseconds
+animation-charging-framerate = 750
+
+; Only applies if <animation-discharging> is used
+;;animation-discharging-0 = ${battery.anim0}
+;;animation-discharging-1 = ${battery.anim1}
+
+; Framerate in milliseconds
+
+[settings]
+screenchange-reload = true
+pseudo-transparency = true
+
+; vim:ft=dosini
+
